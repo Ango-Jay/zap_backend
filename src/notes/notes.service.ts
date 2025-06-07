@@ -1,57 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNoteDto } from './dto/create-note-dto';
-import {v4 as uuid4 } from "uuid"
-import { UpdateNoteDto } from './dto/update-note-dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Note } from './entities/note.entity';
+import { CreateNoteDto } from './dto/create-note.dto';
+import { UpdateNoteDto } from './dto/update-note.dto';
 
 @Injectable()
 export class NotesService {
-    private notes = [
-        {
-            id: "54",
-            title: "<h2>Test note</h2>",
-            content:"<p>upa lupa go</p>"
-        },
-        {
-            id: "55",
-            title: "<h2>Ronald Trump</h2>",
-            content:"<p>upa lupa go</p>"
-        }
-    ];
+  constructor(
+    @InjectRepository(Note)
+    private notesRepository: Repository<Note>,
+  ) {}
 
-    getNotes(){
- return this.notes
-    };
+  async create(createNoteDto: CreateNoteDto): Promise<Note> {
+    const note = this.notesRepository.create(createNoteDto);
+    return await this.notesRepository.save(note);
+  }
 
-    getNote(id: string){
-const note = this.notes.find(item => item.id === id)
-if(!note){
-    throw new Error("note not found")
-}
-return note
-    };
-    createNote(creatNotesDto:CreateNoteDto){
-       const note = {
-        ...creatNotesDto,
-        id: uuid4()
-       }
-        this.notes.push(note)
-    };
-    updateNote(id:string, updateNoteDto:UpdateNoteDto){
-        this.notes = this.notes.map(note => {
-            if(note.id === id){
-             return({
-                ...note,
-                ...updateNoteDto
-             })
-            };
-            return note
-        });
-        return this.getNote(id)
-    };
-    removeNote(id:string){
-        const noteToBeRemoved = this.getNote(id)
-        this.notes = this.notes.filter(item => item.id === id);
-        return noteToBeRemoved;
-    }
+  async findAll(): Promise<Note[]> {
+    return await this.notesRepository.find();
+  }
+
+  async findOne(id: string): Promise<Note> {
+    return await this.notesRepository.findOneByOrFail({ id });
+  }
+
+  async update(id: string, updateNoteDto: UpdateNoteDto): Promise<Note> {
+    await this.notesRepository.update(id, updateNoteDto);
+    return await this.findOne(id);
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.notesRepository.delete(id);
+  }
 }
