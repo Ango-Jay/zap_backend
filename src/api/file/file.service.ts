@@ -5,7 +5,6 @@ import { Attachment } from './entities/attachment.entity';
 import { randomBytes } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
-import { configureCloudinary } from '../../config/cloudinary.config';
 
 @Injectable()
 export class FileService {
@@ -14,7 +13,11 @@ export class FileService {
     private attachmentRepository: Repository<Attachment>,
     private configService: ConfigService,
   ) {
-    configureCloudinary(configService);
+    cloudinary.config({
+      cloud_name: this.configService.get('cloudinary.cloud_name'),
+      api_key: this.configService.get('cloudinary.api_key'),
+      api_secret: this.configService.get('cloudinary.api_secret'),
+    });
   }
 
   private generateUniqueFileName(originalName: string): string {

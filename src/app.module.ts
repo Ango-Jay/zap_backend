@@ -7,11 +7,13 @@ import { databaseConfig } from './config/database.config';
 import { FileModule } from './api/file/file.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './api/user/user.module';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [configuration],
     }),
     TypeOrmModule.forRoot(databaseConfig),
     NotesModule,

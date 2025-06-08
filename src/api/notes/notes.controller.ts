@@ -7,34 +7,45 @@ import { UserGuard } from '../../common/guards/user.guard';
 @Controller('notes')
 @UseGuards(UserGuard)
 export class NotesController {
-    constructor(private readonly notesService:NotesService){}
-    //  GET /notes
-@Get()
- getNotes(){
-   return this.notesService.getNotes()
-}
-// GET /note/:id
-@Get(":id") 
- getNote(@Param("id") id:string){
-try {
-    return this.notesService.getNote(id);
-} catch (error) {
-    throw new NotFoundException()
-}
- }
-// POST /note
-@Post()
- createNote(@Body() createNoteDto:CreateNoteDto){
-  return this.notesService.createNote(createNoteDto)
- }
-// PATCH /note/:id
-@Patch(":id")
- updateNote(@Param("id") id:string, @Body() updateNoteDto:UpdateNoteDto){
-    return this.notesService.updateNote(id, updateNoteDto)
- }
-// DELETE /note/:id
-@Delete(":id")
- removeNote(@Param("id") id:string){
-return this.notesService.removeNote(id)
- }
+    constructor(private readonly notesService: NotesService) {}
+
+    @Post()
+    async create(@Body() createNoteDto: CreateNoteDto) {
+        return this.notesService.create(createNoteDto);
+    }
+
+    @Get()
+    async findAll() {
+        return this.notesService.findAll();
+    }
+
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+        try {
+            return await this.notesService.findOne(id);
+        } catch (error) {
+            throw new NotFoundException(`Note with ID ${id} not found`);
+        }
+    }
+
+    @Patch(':id')
+    async update(
+        @Param('id') id: string,
+        @Body() updateNoteDto: UpdateNoteDto
+    ) {
+        try {
+            return await this.notesService.update(id, updateNoteDto);
+        } catch (error) {
+            throw new NotFoundException(`Note with ID ${id} not found`);
+        }
+    }
+
+    @Delete(':id')
+    async remove(@Param('id') id: string) {
+        try {
+            await this.notesService.remove(id);
+        } catch (error) {
+            throw new NotFoundException(`Note with ID ${id} not found`);
+        }
+    }
 }

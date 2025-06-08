@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { AuthService } from './auth/auth.service';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -12,8 +13,8 @@ export class UserController {
   ) {}
 
   @Post()
-  async create(@Body() userData: Omit<User, 'id' | 'createdAt'>): Promise<User> {
-    return this.authService.createUser(userData);
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.authService.createUser(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)

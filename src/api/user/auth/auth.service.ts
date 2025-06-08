@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,11 +32,13 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  async createUser(userData: Omit<User, 'id' | 'createdAt'>): Promise<User> {
-    const hashedPassword = await this.hashPassword(userData.password);
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const { password, ...userData } = createUserDto;
+    const passwordHash = await this.hashPassword(password);
+    
     const user = this.userRepository.create({
       ...userData,
-      passwordHash: hashedPassword,
+      passwordHash,
     });
     return this.userRepository.save(user);
   }
