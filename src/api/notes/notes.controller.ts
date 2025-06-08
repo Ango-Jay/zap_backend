@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note-dto';
 import { NotesService } from './notes.service';
 import { UpdateNoteDto } from './dto/update-note-dto';
+import { UserGuard } from '../../common/guards/user.guard';
 
 @Controller('notes')
+@UseGuards(UserGuard)
 export class NotesController {
     constructor(private readonly notesService:NotesService){}
     //  GET /notes
