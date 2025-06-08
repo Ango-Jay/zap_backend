@@ -5,7 +5,7 @@ import { Attachment } from './entities/attachment.entity';
 import { randomBytes } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
-import { configureCloudinary } from '../config/cloudinary.config';
+import { configureCloudinary } from '../../config/cloudinary.config';
 
 @Injectable()
 export class FileService {

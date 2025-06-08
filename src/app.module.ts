@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { NotesModule } from './notes/notes.module';
+import { NotesModule } from './api/notes/notes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database.config';
-import { FileModule } from './file/file.module';
+import { FileModule } from './api/file/file.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
