@@ -4,11 +4,17 @@ import { AppService } from './app.service';
 import { NotesModule } from './notes/notes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database.config';
+import { FileModule } from './file/file.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot(databaseConfig),
-    NotesModule
+    NotesModule,
+    FileModule
   ],
   controllers: [AppController],
   providers: [AppService],
