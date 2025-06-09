@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Note } from '../../notes/entities/note.entity';
 
 @Entity('attachments')
 export class Attachment {
@@ -15,7 +16,7 @@ export class Attachment {
   mimeType: string;
 
   @Column()
-  size: number;
+  fileSize: number;
 
   @Column()
   url: string;
@@ -25,6 +26,16 @@ export class Attachment {
 
   @Column({ nullable: true })
   cloudProviderId: string;
+
+  @Column('uuid')
+  noteId: string;
+
+  @Column({ nullable: false })
+  type: string;
+
+  @ManyToOne(() => Note, note => note.attachments)
+  @JoinColumn({ name: 'noteId' })
+  note: Note;
 
   @CreateDateColumn()
   createdAt: Date;

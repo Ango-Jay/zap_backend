@@ -27,7 +27,15 @@ export class FileService {
     return `${timestamp}-${randomString}.${extension}`;
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<Attachment> {
+  private getFileType(mimeType: string): string {
+    if (mimeType.startsWith('image/')) return 'image';
+    if (mimeType.startsWith('video/')) return 'video';
+    if (mimeType.startsWith('audio/')) return 'audio';
+    if (mimeType.startsWith('application/pdf')) return 'document';
+    return 'other';
+  }
+
+  async uploadFile(file: Express.Multer.File, noteId: string): Promise<Attachment> {
     const fileName = this.generateUniqueFileName(file.originalname);
     
     // Upload to Cloudinary
@@ -52,10 +60,12 @@ export class FileService {
       originalName: file.originalname,
       fileName: fileName,
       mimeType: file.mimetype,
-      size: file.size,
+      fileSize: file.size,
       url: cloudinaryResult.secure_url,
       cloudProvider: 'cloudinary',
       cloudProviderId: cloudinaryResult.public_id,
+      noteId: noteId,
+      type: this.getFileType(file.mimetype)
     });
 
     return this.attachmentRepository.save(attachment);

@@ -6,13 +6,14 @@ import { Attachment } from './entities/attachment.entity';
 describe('FileController', () => {
   let controller: FileController;
   let service: FileService;
-
+  const mockNoteId = '123e4567-e89b-12d3-a456-426614174000';
   const mockAttachment = {
     id: '123e4567-e89b-12d3-a456-426614174000',
     originalName: 'test.jpg',
     fileName: '1234567890-abcdef.jpg',
     mimeType: 'image/jpeg',
-    size: 1024,
+    type: 'image',
+    fileSize: 1024,
     url: 'https://res.cloudinary.com/test/image/upload/test.jpg',
     cloudProvider: 'cloudinary',
     cloudProviderId: 'test',
@@ -52,7 +53,7 @@ describe('FileController', () => {
 
   describe('uploadFile', () => {
     it('should upload a file and return attachment details', async () => {
-      const result = await controller.uploadFile(mockFile);
+      const result = await controller.uploadFile(mockNoteId, mockFile);
       
       expect(result).toEqual(mockAttachment);
       expect(service.uploadFile).toHaveBeenCalledWith(mockFile);

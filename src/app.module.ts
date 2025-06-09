@@ -13,6 +13,7 @@ import { LoggingMiddleware } from './common/middleware/logging.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: ['.env','.env.local'],
       isGlobal: true,
       load: [configuration],
     }),

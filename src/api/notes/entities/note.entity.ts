@@ -6,10 +6,10 @@ export class Note {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   title: string;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   content: string;
 
   @Column('uuid')

@@ -15,7 +15,8 @@ export class NotesService {
   async create(createNoteDto: CreateNoteDto, userId: string): Promise<Note> {
     try {
       const note = this.notesRepository.create({
-        ...createNoteDto,
+        title: createNoteDto.title || null,
+        content: createNoteDto.content || null,
         user_id: userId
       });
       return await this.notesRepository.save(note);

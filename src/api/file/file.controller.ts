@@ -9,10 +9,13 @@ import { UserGuard } from '../../common/guards/user.guard';
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  @Post('upload')
+  @Post('upload/:noteId')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<Attachment> {
-    return this.fileService.uploadFile(file);
+  async uploadFile(
+    @Param('noteId', ParseUUIDPipe) noteId: string,
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<Attachment> {
+    return this.fileService.uploadFile(file, noteId);
   }
 
   @Delete(':id')
