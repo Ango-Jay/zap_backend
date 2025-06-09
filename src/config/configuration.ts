@@ -1,7 +1,7 @@
 export default () => ({
   jwt: {
-    secret: 'jwtsecret',
-    expiresIn: '1d',
+    secret: process.env.JWT_SECRET || 'jwtsecret',
+    expiresIn: process.env.JWT_EXPIRES_IN || '1d',
   },
   cloudinary: {
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
