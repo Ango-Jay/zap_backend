@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import helmet from 'helmet';
 import { urlencoded, json } from 'express';
-import compression from 'compression';
+import * as compression from 'compression';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
