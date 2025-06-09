@@ -4,6 +4,7 @@ import { AuthService } from './auth/auth.service';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('users')
 export class UserController {
@@ -12,8 +13,13 @@ export class UserController {
     private readonly authService: AuthService,
   ) {}
 
+  @Post('login')
+  async login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
+  }
+
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<Omit<User, "passwordHash">> {
     return this.authService.createUser(createUserDto);
   }
 

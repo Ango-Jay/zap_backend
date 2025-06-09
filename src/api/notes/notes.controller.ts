@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UseGuards, Request } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note-dto';
 import { NotesService } from './notes.service';
 import { UpdateNoteDto } from './dto/update-note-dto';
@@ -10,8 +10,8 @@ export class NotesController {
     constructor(private readonly notesService: NotesService) {}
 
     @Post()
-    async create(@Body() createNoteDto: CreateNoteDto) {
-        return this.notesService.create(createNoteDto);
+    async create(@Request() req, @Body() createNoteDto: CreateNoteDto) {
+        return this.notesService.create(createNoteDto, req.user.id);
     }
 
     @Get()

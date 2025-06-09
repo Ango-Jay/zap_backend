@@ -2,38 +2,80 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { BaseService } from '../../common/base/base.service'
 
 @Injectable()
-export class UserService {
+export class UserService extends BaseService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) {
+    super('UserService');
+  }
 
   async findById(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+    this.logMethodCall('findById', { id });
+    try {
+      const user = await this.userRepository.findOne({ where: { id } });
+      if (!user) {
+        this.logError('findById', new NotFoundException(`User with ID ${id} not found`));
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+      this.logMethodResult('findById', { userId: user.id });
+      return user;
+    } catch (error) {
+      this.logError('findById', error);
+      throw error;
     }
-    return user;
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
+    this.logMethodCall('findByEmail', { email });
+    try {
+      const user = await this.userRepository.findOne({ where: { email } });
+      this.logMethodResult('findByEmail', user ? { userId: user.id } : null);
+      return user;
+    } catch (error) {
+      this.logError('findByEmail', error);
+      throw error;
+    }
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+    this.logMethodCall('findAll');
+    try {
+      const users = await this.userRepository.find();
+      this.logMethodResult('findAll', { count: users.length });
+      return users;
+    } catch (error) {
+      this.logError('findAll', error);
+      throw error;
+    }
   }
 
   async update(id: string, updateData: Partial<User>): Promise<User> {
-    const user = await this.findById(id);
-    Object.assign(user, updateData);
-    return this.userRepository.save(user);
+    this.logMethodCall('update', { id, updateData });
+    try {
+      const user = await this.findById(id);
+      Object.assign(user, updateData);
+      const updatedUser = await this.userRepository.save(user);
+      this.logMethodResult('update', { userId: updatedUser.id });
+      return updatedUser;
+    } catch (error) {
+      this.logError('update', error);
+      throw error;
+    }
   }
 
   async delete(id: string): Promise<void> {
-    const user = await this.findById(id);
-    await this.userRepository.remove(user);
+    this.logMethodCall('delete', { id });
+    try {
+      const user = await this.findById(id);
+      await this.userRepository.remove(user);
+      this.logMethodResult('delete', { userId: id });
+    } catch (error) {
+      this.logError('delete', error);
+      throw error;
+    }
   }
 } 
